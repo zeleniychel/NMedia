@@ -12,10 +12,10 @@
         android:layout_width="@dimen/posts_avatar_size"
         android:layout_height="@dimen/posts_avatar_size"
         android:layout_margin="@dimen/common_spacing"
+        android:contentDescription="@string/description_post_author_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@sample/posts_avatars"
-        android:contentDescription="@string/description_post_author_avatar" />
+        app:srcCompat="@drawable/netology" />
 
     <TextView
         android:id="@+id/author"
@@ -48,10 +48,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/common_spacing"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/description_post_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_more_vert_24"
-        android:contentDescription="@string/description_post_menu"/>
+        app:srcCompat="@drawable/ic_more_vert_24" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
@@ -87,10 +87,10 @@
         android:layout_marginStart="@dimen/common_spacing"
         android:layout_marginTop="@dimen/common_spacing"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/description_post_likes"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content_barrier"
-        app:srcCompat="@drawable/ic_favorite_border_24"
-        android:contentDescription="@string/description_post_likes" />
+        app:srcCompat="@drawable/ic_favorite_border_24" />
 
 
     <TextView
@@ -110,14 +110,14 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="@dimen/common_spacing"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/description_post_shares"
         app:layout_constraintStart_toEndOf="@id/likes"
         app:layout_constraintTop_toBottomOf="@id/content_barrier"
-        app:srcCompat="@drawable/ic_baseline_share_24"
-        android:contentDescription="@string/description_post_shares" />
+        app:srcCompat="@drawable/ic_baseline_share_24" />
 
 
     <TextView
-        android:id="@+id/share_count"
+        android:id="@+id/shares_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -130,21 +130,21 @@
         android:id="@+id/views"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/description_post_views"
+        app:layout_constraintBottom_toBottomOf="@id/views_count"
         app:layout_constraintEnd_toStartOf="@id/views_count"
         app:layout_constraintTop_toTopOf="@id/views_count"
-        app:layout_constraintBottom_toBottomOf="@id/views_count"
-        android:layout_marginEnd="8dp"
-        app:srcCompat="@drawable/ic_remove_red_eye_24"
-        android:contentDescription="@string/description_post_views" />
+        app:srcCompat="@drawable/ic_remove_red_eye_24" />
 
 
     <TextView
         android:id="@+id/views_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/common_spacing"
         android:layout_marginTop="@dimen/common_spacing"
+        android:layout_marginEnd="@dimen/common_spacing"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content_barrier"
         tools:text="@sample/posts.json/data/views" />
