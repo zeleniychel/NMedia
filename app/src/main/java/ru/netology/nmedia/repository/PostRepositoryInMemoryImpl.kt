@@ -6,7 +6,7 @@ import ru.netology.nmedia.dto.Post
 
 class PostRepositoryInMemoryImpl : PostRepository {
 
-    private var nextId =1L
+    private var nextId = 1L
     private var posts = listOf(
         Post(
             nextId++,

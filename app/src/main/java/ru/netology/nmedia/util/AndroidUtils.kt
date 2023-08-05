@@ -10,14 +10,13 @@ object AndroidUtils {
         val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
     fun View.focusAndShowKeyboard() {
-        /**
-         * This is to be called when the window already has focus.
-         */
         fun View.showTheKeyboardNow() {
             if (isFocused) {
                 post {
-                    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val imm =
+                        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
                 }
             }

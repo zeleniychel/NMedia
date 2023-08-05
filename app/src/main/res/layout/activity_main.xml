@@ -5,47 +5,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+    <include
+        android:id="@+id/editor"
+        layout="@layout/menu_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/barrierTop" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/barrierTop"
-        app:layout_constraintTop_toTopOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/card_post"
-        />
-    
+        app:layout_constraintBottom_toTopOf="@id/editor"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/card_post" />
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
-        app:constraint_referenced_ids="content"/>
+        app:constraint_referenced_ids="content" />
 
 
     <EditText
         android:id="@+id/content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
         android:hint="@string/post_text"
+        android:importantForAutofill="no"
         android:inputType="textMultiLine"
         android:maxLines="6"
-        android:padding="8dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/save"
+        android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:importantForAutofill="no"/>
+        app:layout_constraintEnd_toStartOf="@id/save"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
-        android:src="@drawable/ic_save_48"/>
-
+        android:src="@drawable/ic_save_48"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

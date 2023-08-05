@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/edit_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="cancel_input,editing_mode,editing_content,edit_message" />
+
+
+    <ImageView
+        android:id="@+id/editing_mode"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:contentDescription="@string/description_editing_mode"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_edit_48" />
+
+    <ImageButton
+        android:id="@+id/cancel_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/common_spacing"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/description_cancel_input"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_cancel_48" />
+
+    <TextView
+        android:id="@+id/edit_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:layout_marginEnd="@dimen/common_spacing"
+        android:text="@string/edit_message"
+        android:textColor="#00A1DB"
+        app:layout_constraintBottom_toTopOf="@id/editing_content"
+        app:layout_constraintEnd_toStartOf="@id/cancel_input"
+        app:layout_constraintStart_toEndOf="@id/editing_mode"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/editing_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/common_spacing"
+        android:layout_marginEnd="@dimen/common_spacing"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cancel_input"
+        app:layout_constraintStart_toEndOf="@id/editing_mode"
+        app:layout_constraintTop_toBottomOf="@id/edit_message"
+        tools:text="@sample/posts.json/data/content" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
