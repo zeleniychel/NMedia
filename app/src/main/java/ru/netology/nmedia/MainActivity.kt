@@ -61,14 +61,19 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             viewModel.changeContentAndSave(text)
-
+            binding.editor.editingContent.text = ""
+            binding.editor.editGroup.visibility = View.GONE
             binding.content.setText("")
             binding.content.clearFocus()
             AndroidUtils.hideKeyboard(it)
         }
 
         binding.editor.cancelInput.setOnClickListener {
+            viewModel.clearTextInput()
+            binding.editor.editingContent.text = ""
             binding.editor.editGroup.visibility = View.GONE
+            binding.content.setText("")
+            binding.content.clearFocus()
             AndroidUtils.hideKeyboard(it)
         }
     }
