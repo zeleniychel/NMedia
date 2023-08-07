@@ -52,7 +52,9 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_save_48"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrierTop"
+        android:contentDescription="@string/description_post_save" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
