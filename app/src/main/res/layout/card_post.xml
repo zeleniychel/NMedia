@@ -73,7 +73,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/views"
-        style="@style/Widget.AppTheme.LikeButton"
+        style="@style/Widget.AppTheme.ViewButton"
         android:contentDescription="@string/description_post_views"
         app:icon="@drawable/ic_remove_red_eye_24"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -93,7 +93,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/share"
-        style="@style/Widget.AppTheme.LikeButton"
+        style="@style/Widget.AppTheme.ShareButton"
         android:contentDescription="@string/description_post_shares"
         app:icon="@drawable/ic_baseline_share_24"
         app:layout_constraintBottom_toBottomOf="@id/likes"
@@ -102,7 +102,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/menu"
-        style="@style/Widget.AppTheme.LikeButton"
+        style="@style/Widget.AppTheme.MenuButton"
         android:contentDescription="@string/description_post_menu"
         app:icon="@drawable/ic_more_vert_24"
         app:layout_constraintBottom_toBottomOf="@id/author"
