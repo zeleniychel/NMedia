@@ -44,7 +44,7 @@
         android:layout_marginStart="@dimen/common_spacing"
         android:layout_marginEnd="@dimen/common_spacing"
         android:text="@string/edit_message"
-        android:textColor="#00A1DB"
+        android:textColor="@color/purple_500"
         app:layout_constraintBottom_toTopOf="@id/editing_content"
         app:layout_constraintEnd_toStartOf="@id/cancel_input"
         app:layout_constraintStart_toEndOf="@id/editing_mode"
