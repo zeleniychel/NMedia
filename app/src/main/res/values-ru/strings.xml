@@ -13,6 +13,8 @@
     <string name="post_text">Текст поста</string>
     <string name="menu_edit">Изменить</string>
     <string name="edit_message">Редактирование</string>
-    <string name="error_empty_content">Контент не может быть пустой</string>
+    <string name="error_empty_content">Контент не может быть пустым</string>
     <string name="description_post_save">Сохранить</string>
+    <string name="chooser_share_post">Поделиться</string>
+    <string name="add_post">Добавить пост</string>
 </resources>
