@@ -16,8 +16,8 @@ interface OnInteractionListener {
     fun onLike(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
-    fun onShare(post:Post) {}
-    fun onPlay(post: Post){}
+    fun onShare(post: Post) {}
+    fun onPlay(post: Post) {}
 
 }
 
@@ -62,6 +62,7 @@ class PostViewHolder(
                                 onInteractionListener.onRemove(post)
                                 true
                             }
+
                             R.id.edit -> {
                                 onInteractionListener.onEdit(post)
 

@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         val viewModel: PostViewModel by viewModels()
         val editorLauncher = registerForActivityResult(EditorResultContract()) { result ->
-            result?: return@registerForActivityResult
+            result ?: return@registerForActivityResult
             viewModel.changeContentAndSave(result)
         }
         val newPostLauncher = registerForActivityResult(NewPostResultContract()) { result ->
@@ -36,11 +36,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onPlay(post: Post) {
-                val intent = Intent().apply{
-                    action = Intent.ACTION_VIEW
+                val intent = Intent(
+                    Intent.ACTION_VIEW,
                     Uri.parse(post.videoUrl)
-
-                }
+                )
                 if (intent.resolveActivity(packageManager) != null) {
                     startActivity(intent)
                 }
@@ -77,7 +76,5 @@ class MainActivity : AppCompatActivity() {
         binding.fab.setOnClickListener {
             newPostLauncher.launch()
         }
-
-
     }
 }
