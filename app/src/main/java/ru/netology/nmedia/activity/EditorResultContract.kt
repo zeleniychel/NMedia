@@ -8,7 +8,7 @@ import androidx.activity.result.contract.ActivityResultContract
 class EditorResultContract : ActivityResultContract<String, String?>() {
 
     override fun createIntent(context: Context, input: String): Intent =
-        Intent(context, EditorResultContract::class.java).putExtra("",input)
+        Intent(context, EditorActivity::class.java).putExtra("",input)
 
     override fun parseResult(resultCode: Int, intent: Intent?): String? =
         if (resultCode == Activity.RESULT_OK) {
