@@ -16,6 +16,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".activity.IntentHandlerActivity"
@@ -35,5 +36,11 @@
             android:name=".activity.EditorActivity"
             android:exported="false" />
     </application>
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="*" />
+        </intent>
+    </queries>
 
 </manifest>

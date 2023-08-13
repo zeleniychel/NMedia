@@ -14,21 +14,19 @@ private val empty = Post(
     false,
     0,
     0,
-    0
+    0,
+    null
 )
 
 class PostViewModel : ViewModel() {
     private val repository: PostRepository = PostRepositoryInMemoryImpl()
     val data = repository.getAll()
-    val edited = MutableLiveData(empty)
+    private val edited = MutableLiveData(empty)
 
     fun edit(post: Post) {
         edited.value = post
     }
 
-    fun clearTextInput() {
-        edited.value = empty
-    }
 
     fun changeContentAndSave(content: String) {
         edited.value?.let {
