@@ -51,7 +51,11 @@ class PostViewHolder(
             likes.text = Converter.convertNumber(post.likesCount)
             share.text = Converter.convertNumber(post.sharesCount)
 
-            if (post.videoUrl != null) videoGroup.visibility = View.VISIBLE
+            if (post.videoUrl != null) {
+                videoGroup.visibility = View.VISIBLE
+            } else {
+                videoGroup.visibility = View.GONE
+            }
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {

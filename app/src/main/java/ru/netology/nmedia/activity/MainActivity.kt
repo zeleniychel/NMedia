@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         val viewModel: PostViewModel by viewModels()
         val editorLauncher = registerForActivityResult(EditorResultContract()) { result ->
-            result ?: return@registerForActivityResult
-            viewModel.changeContentAndSave(result)
+            result ?.let { viewModel.changeContentAndSave(result) } ?: viewModel.clearEdit()
         }
         val newPostLauncher = registerForActivityResult(NewPostResultContract()) { result ->
             result ?: return@registerForActivityResult

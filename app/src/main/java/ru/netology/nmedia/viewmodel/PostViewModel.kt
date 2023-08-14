@@ -27,6 +27,9 @@ class PostViewModel : ViewModel() {
         edited.value = post
     }
 
+    fun clearEdit() {
+        edited.value = empty
+    }
 
     fun changeContentAndSave(content: String) {
         edited.value?.let {

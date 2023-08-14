@@ -3,6 +3,7 @@ package ru.netology.nmedia.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import ru.netology.nmedia.databinding.ActivityEditorBinding
 
@@ -12,6 +13,15 @@ class EditorActivity:AppCompatActivity() {
         val binding = ActivityEditorBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val contentText = intent.extras?.getString("")
+
+        this.onBackPressedDispatcher.addCallback(
+            this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed(){
+                    setResult(Activity.RESULT_CANCELED, intent)
+                    finish()
+                }
+            }
+        )
 
         binding.edit.apply {
             requestFocus()
