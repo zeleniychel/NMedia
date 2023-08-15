@@ -16,7 +16,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             43,
             1299,
-            1333
+            1333,
+            "https://www.youtube.com/watch?v=S-xjudFxgBU&t=1160s"
         ),
         Post(
             nextId++,
@@ -26,7 +27,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             129,
             1599,
-            113
+            113,
+            null
         ),
         Post(
             nextId++,
@@ -36,7 +38,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             66,
             15,
-            333
+            333,
+            null
         ),
         Post(
             nextId++,
@@ -46,7 +49,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             1,
             1,
-            1
+            1,
+            null
         ),
         Post(
             nextId++,
@@ -56,7 +60,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             65,
             49,
-            333
+            333,
+            null
         ),
         Post(
             nextId++,
@@ -66,7 +71,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             99,
             199,
-            19
+            19,
+            null
         ),
         Post(
             nextId++,
@@ -76,7 +82,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             19999,
             19999,
-            999
+            999,
+            null
         ),
         Post(
             nextId++,
@@ -86,7 +93,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             88,
             144,
-            125
+            125,
+            null
         ),
         Post(
             nextId++,
@@ -96,7 +104,8 @@ class PostRepositoryInMemoryImpl : PostRepository {
             false,
             999,
             1099,
-            123
+            123,
+            "1"
         )
     )
     private val data = MutableLiveData(posts)
