@@ -45,7 +45,9 @@ class FeedFragment : Fragment() {
                     Intent.ACTION_VIEW,
                     Uri.parse(post.videoUrl)
                 )
+                if (intent.resolveActivity(packageManager) != null) {
                     startActivity(intent)
+                }
             }
 
             override fun onLike(post: Post) {
