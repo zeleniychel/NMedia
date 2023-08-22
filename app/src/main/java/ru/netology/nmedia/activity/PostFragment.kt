@@ -7,20 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.EditorFragment.Companion.content
 import ru.netology.nmedia.adapter.OnInteractionListener
-import ru.netology.nmedia.adapter.PostsAdapter
-import ru.netology.nmedia.databinding.FragmentFeedBinding
+import ru.netology.nmedia.adapter.PostViewHolder
+import ru.netology.nmedia.databinding.FragmentCardPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.util.getParcelableCompat
 import ru.netology.nmedia.viewmodel.PostViewModel
 
-class FeedFragment : Fragment() {
 
+class PostFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
@@ -32,7 +32,10 @@ class FeedFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val binding = FragmentFeedBinding.inflate(layoutInflater)
+
+        val postArg = arguments?.getParcelableCompat<Post>("key")
+
+        val binding = FragmentCardPostBinding.inflate(layoutInflater)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -42,13 +45,15 @@ class FeedFragment : Fragment() {
             }
         )
 
-        val adapter = PostsAdapter(object : OnInteractionListener {
+        val holder = PostViewHolder(binding.singlePost, object : OnInteractionListener {
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
-                findNavController().navigate(R.id.action_feedFragment_to_editorFragment,
+                findNavController().navigate(
+                    R.id.action_postFragment_to_editorFragment,
                     Bundle().apply {
                         content = post.content
                     })
+
             }
 
             override fun onPlay(post: Post) {
@@ -62,12 +67,7 @@ class FeedFragment : Fragment() {
                 }
             }
 
-            override fun onPost(post: Post) {
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_postFragment,
-                    bundleOf("key" to post)
-                )
-            }
+            override fun onPost(post: Post) {}
 
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
@@ -75,6 +75,7 @@ class FeedFragment : Fragment() {
 
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
+                findNavController().navigateUp()
             }
 
             override fun onShare(post: Post) {
@@ -88,17 +89,14 @@ class FeedFragment : Fragment() {
                     Intent.createChooser(intent, getString(R.string.chooser_share_post))
                 startActivity(shareIntent)
                 viewModel.shareById(post.id)
+
+
             }
         })
 
-        binding.list.adapter = adapter
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-            adapter.submitList(posts) {
-                binding.list.smoothScrollToPosition(0)
-            }
-        }
-        binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+        holder.bind(postArg ?: Post())
+        viewModel.data.observe(viewLifecycleOwner) {
+            holder.bind(it.find { (id) -> id == postArg?.id } ?: Post())
         }
 
         return binding.root
