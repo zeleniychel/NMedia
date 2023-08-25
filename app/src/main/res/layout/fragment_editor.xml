@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.NewPostActivity">
+    tools:context=".activity.EditorFragment">
 
     <EditText
         android:id="@+id/edit"
@@ -31,5 +31,15 @@
         app:srcCompat="@drawable/ic_save_48"
         app:layout_anchor="@id/bottomAppBar"
         />
+
+    <ImageButton
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/description_cancel_input"
+        app:layout_anchor="@+id/ok"
+        app:layout_anchorGravity="end|top"
+        app:srcCompat="@drawable/ic_cancel_48" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
