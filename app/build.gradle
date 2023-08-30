@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id "kotlin-parcelize"
+    id 'org.jetbrains.kotlin.kapt'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -49,7 +50,8 @@ dependencies {
     def activity_version = "1.7.2"
     def lifecycle_version = "2.6.1"
     def gson_version = "2.10.1"
-    def nav_version = "2.7.0"
+    def nav_version = "2.7.1"
+    def room_version = "2.5.2"
 
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -62,6 +64,8 @@ dependencies {
     implementation "com.google.code.gson:gson:$gson_version"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
