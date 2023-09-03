@@ -40,6 +40,7 @@ class FCMService: FirebaseMessagingService() {
         message.data["action"]?.let {
             when (Actions.valueOf(it)) {
                 Actions.LIKE -> handleLike(Gson().fromJson(message.data["content"], Like::class.java))
+                Actions.NEW_POST -> handleNewPost(Gson().fromJson(message.data["content"], NewPost::class.java))
             }
         }
         println(Gson().toJson(message))
@@ -65,13 +66,36 @@ class FCMService: FirebaseMessagingService() {
         )
     }
 
+    private fun handleNewPost(newPost: NewPost){
+        val intent = Intent(this, AppActivity::class.java)
+        val pi = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_IMMUTABLE)
+        val notification = NotificationCompat.Builder(this,channelId)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentText(getString((R.string.notification_user_create_new_post), newPost.postAuthor))
+            .setContentIntent(pi)
+            .setStyle(NotificationCompat.BigTextStyle()
+                .bigText(newPost.contentNewPost))
+            .setAutoCancel(true)
+            .build()
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
+        NotificationManagerCompat.from(this).notify(
+            Random.nextInt(100_00),
+            notification
+        )
+    }
+
     override fun onNewToken(token: String) {
         println(token)
     }
 }
 
 enum class Actions {
-    LIKE
+    LIKE,
+    NEW_POST
 }
 
 data class Like (
@@ -79,4 +103,9 @@ data class Like (
     val userName: String,
     val postId: Int,
     val postAuthor: String
+)
+
+data class NewPost (
+    val postAuthor: String,
+    val contentNewPost: String
 )

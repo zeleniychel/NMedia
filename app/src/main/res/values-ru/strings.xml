@@ -24,4 +24,5 @@
     <string name="notification_user_liked">Пользователь %1$s лайкнул пост  %2$s</string>
     <string name="channel_remote_name">Серверные уведомления</string>
     <string name="channel_remote_description">Уведовления с удаленного сервера</string>
+    <string name="notification_user_create_new_post">Пользователь %1$s опубликовал новый пост:</string>
 </resources>
