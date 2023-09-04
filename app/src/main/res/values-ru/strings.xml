@@ -20,4 +20,9 @@
     <string name="description_video_preview">Превью видео</string>
     <string name="description_video_title">Название видео</string>
     <string name="description_video_views">Просмотров</string>
+    <string name="google_play_unavailable">Google Api Недоступно</string>
+    <string name="notification_user_liked">Пользователь %1$s лайкнул пост  %2$s</string>
+    <string name="channel_remote_name">Серверные уведомления</string>
+    <string name="channel_remote_description">Уведовления с удаленного сервера</string>
+    <string name="notification_user_create_new_post">Пользователь %1$s опубликовал новый пост:</string>
 </resources>
