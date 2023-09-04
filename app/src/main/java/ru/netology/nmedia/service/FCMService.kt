@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -37,10 +38,11 @@ class FCMService: FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        message.data["action"]?.let {
-            when (Actions.valueOf(it)) {
+        message.data["action"]?.let { action ->
+            when (Actions.values().find {it.name == action}) {
                 Actions.LIKE -> handleLike(Gson().fromJson(message.data["content"], Like::class.java))
                 Actions.NEW_POST -> handleNewPost(Gson().fromJson(message.data["content"], NewPost::class.java))
+                else -> Log.d("notification", "mismatch value")
             }
         }
         println(Gson().toJson(message))
