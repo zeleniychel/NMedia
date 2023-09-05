@@ -33,17 +33,21 @@ class NewPostFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
+                    viewModel.draft = binding.edit.text.toString()
                     findNavController().navigateUp()
                 }
             }
         )
 
-        binding.edit.setText(arguments?.textArg)
+        binding.edit.setText(
+            if (viewModel.draft != null) viewModel.draft else arguments?.textArg
+        )
 
         binding.ok.setOnClickListener {
             if (!binding.edit.text.isNullOrBlank()) {
                 val content = binding.edit.text.toString()
                 viewModel.changeContentAndSave(content)
+                viewModel.draft = null
             }
             findNavController().navigateUp()
         }
