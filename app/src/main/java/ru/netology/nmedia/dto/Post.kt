@@ -10,9 +10,6 @@ data class Post(
     val author: String = "",
     val content: String = "",
     val published: String = "",
-    val likeByMe: Boolean = false,
-    val likesCount: Int = 0,
-    val sharesCount: Int = 0,
-    val viewsCount: Int = 0,
-    val videoUrl: String? = null
+    val likedByMe: Boolean = false,
+    val likes: Int = 0,
 ) : Parcelable
