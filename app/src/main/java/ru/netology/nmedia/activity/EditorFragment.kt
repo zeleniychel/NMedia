@@ -41,6 +41,9 @@ class EditorFragment : Fragment() {
                 viewModel.changeContentAndSave(content)
             }
             viewModel.clearEdit()
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.load()
             findNavController().navigateUp()
         }
         return binding.root

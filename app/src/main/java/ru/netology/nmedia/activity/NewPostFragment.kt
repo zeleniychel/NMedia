@@ -49,6 +49,9 @@ class NewPostFragment : Fragment() {
                 viewModel.changeContentAndSave(content)
                 viewModel.draft = null
             }
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.load()
             findNavController().navigateUp()
         }
         return binding.root

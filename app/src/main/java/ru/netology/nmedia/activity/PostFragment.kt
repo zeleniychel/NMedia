@@ -1,7 +1,5 @@
 package ru.netology.nmedia.activity
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,14 +55,6 @@ class PostFragment : Fragment() {
             }
 
             override fun onPlay(post: Post) {
-                val intent = Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(post.videoUrl)
-                )
-                val packageManager = activity?.packageManager ?: return
-                if (intent.resolveActivity(packageManager) != null) {
-                    startActivity(intent)
-                }
             }
 
             override fun onPost(post: Post) {}
@@ -79,24 +69,12 @@ class PostFragment : Fragment() {
             }
 
             override fun onShare(post: Post) {
-                val intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, post.content)
-                    type = "text/plain"
-                }
-
-                val shareIntent =
-                    Intent.createChooser(intent, getString(R.string.chooser_share_post))
-                startActivity(shareIntent)
-                viewModel.shareById(post.id)
-
-
             }
         })
 
         holder.bind(postArg ?: Post())
         viewModel.data.observe(viewLifecycleOwner) {
-            holder.bind(it.find { (id) -> id == postArg?.id } ?: Post())
+            holder.bind(it.posts.find { (id) -> id == postArg?.id } ?: Post())
         }
 
         return binding.root
