@@ -38,6 +38,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             override fun onSuccess(result: List<Post>) {
                 _data.postValue(FeedModelState(posts = result, empty = result.isEmpty()))
             }
+
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModelState(error = true))
+            }
         })
 
     }
@@ -58,6 +62,9 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                     object : PostRepository.RepositoryCallback<Unit> {
                         override fun onSuccess(result: Unit) {
                         }
+                        override fun onError(e: Exception) {
+                            _data.postValue(FeedModelState(error = true))
+                        }
                     })
                 _postCreated.postValue(Unit)
             }
@@ -66,24 +73,22 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun likeById(id: Long) {
+        val likeCallback = object : PostRepository.RepositoryCallback<Post> {
+            override fun onSuccess(result: Post) {
+                updatedDataLike(result)
+            }
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModelState(error = true))
+            }
+        }
+
         _data.value?.posts?.map { post ->
             if (post.id == id) {
                 if (post.likedByMe) {
-                    repository.unlikeByIdAsync(
-                        id,
-                        object : PostRepository.RepositoryCallback<Post> {
-                            override fun onSuccess(result: Post) {
-                                updatedDataLike(result)
-                            }
-                        })
+                    repository.unlikeByIdAsync(id, likeCallback)
                 } else {
-                    repository.likeByIdAsync(id, object : PostRepository.RepositoryCallback<Post> {
-                        override fun onSuccess(result: Post) {
-                            updatedDataLike(result)
-                        }
-                    })
+                    repository.likeByIdAsync(id, likeCallback)
                 }
-
             } else {
                 post
             }

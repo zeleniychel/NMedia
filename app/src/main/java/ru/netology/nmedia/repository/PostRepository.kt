@@ -1,8 +1,6 @@
 package ru.netology.nmedia.repository
 
-import androidx.lifecycle.MutableLiveData
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.model.FeedModelState
 
 interface PostRepository {
     fun getAllAsync(callback:RepositoryCallback<List<Post>>)
@@ -13,9 +11,7 @@ interface PostRepository {
 
     interface RepositoryCallback<T> {
         fun onSuccess(result: T)
-        fun onError(e: Exception) {
-            MutableLiveData(FeedModelState()).postValue(FeedModelState(error = true))
-        }
+        fun onError(e: Exception)
     }
 
 }
