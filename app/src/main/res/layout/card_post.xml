@@ -67,9 +67,8 @@
         android:id="@+id/content_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="content" />
+        app:constraint_referenced_ids="attachment_image" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/views"
@@ -108,6 +107,21 @@
         app:layout_constraintBottom_toBottomOf="@id/author"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/author" />
+
+    <ImageView
+        android:id="@+id/attachment_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@id/content_barrier"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        android:visibility="gone"
+        android:contentDescription="@string/attachmentImage" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

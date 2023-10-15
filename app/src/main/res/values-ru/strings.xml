@@ -26,6 +26,7 @@
     <string name="channel_remote_description">Уведовления с удаленного сервера</string>
     <string name="notification_user_create_new_post">Пользователь %1$s опубликовал новый пост:</string>
     <string name="empty_posts">No posts\n</string>
-    <string name="error_loading">loading error</string>
-    <string name="retry_loading">retry loading</string>
+    <string name="error_loading">Ошибка загурзки</string>
+    <string name="retry_loading">Повторить загрузку</string>
+    <string name="attachmentImage">Изображение вложения</string>
 </resources>
