@@ -1,6 +1,7 @@
 package ru.netology.nmedia.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
@@ -10,6 +11,8 @@ import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Converter
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.util.load
+import ru.netology.nmedia.util.loadAttachment
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}
@@ -47,6 +50,13 @@ class PostViewHolder(
             content.text = post.content
             likes.isChecked = post.likedByMe
             likes.text = Converter.convertNumber(post.likes)
+            avatar.load("http://10.0.2.2:9999/avatars/${post.authorAvatar}")
+            if (post.attachment != null){
+                attachmentImage.loadAttachment("http://10.0.2.2:9999/images/${post.attachment.url}")
+                attachmentImage.visibility = View.VISIBLE
+            }
+
+
 
             menu.setOnClickListener {
                 PopupMenu(it.context, it).apply {
@@ -79,6 +89,7 @@ class PostViewHolder(
             root.setOnClickListener {
                 onInteractionListener.onPost(post)
             }
+
 
         }
     }
