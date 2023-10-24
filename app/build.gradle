@@ -22,6 +22,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
     buildTypes {
@@ -29,9 +30,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             manifestPlaceholders.usesCleartextTraffic = false
+            buildConfigField "String", "BASE_URL", '"https://netomedia.ru"'
+
         }
         debug {
             manifestPlaceholders.usesCleartextTraffic = true
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:9999"'
         }
     }
     compileOptions {
@@ -62,6 +66,9 @@ dependencies {
     def okhttp_version ="4.11.0"
     def swiperefreshlayout_version = "1.2.0-alpha01"
     def glide_version = "4.16.0"
+    def retrofit_version ="2.9.0"
+    def retrofitgson_version = "2.9.0"
+    def okhttplogging_version = "4.12.0"
 
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "androidx.core:core-ktx:$core_version"
@@ -82,6 +89,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-base:$play_services_base_version"
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout_version")
     implementation "com.github.bumptech.glide:glide:$glide_version"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitgson_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttplogging_version"
 
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"

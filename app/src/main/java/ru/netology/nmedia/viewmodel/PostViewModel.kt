@@ -28,24 +28,54 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     var draft: String? = null
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit> = _postCreated
+    private val _toastMessage = SingleLiveEvent<String>()
+    val toastMessage:LiveData<String> = _toastMessage
 
     init {
+        _data.value = FeedModelState()
         load()
+
     }
 
     fun load() {
-        _data.postValue(FeedModelState(loading = true))
+        _data.value = _data.value?.copy(loading = true, error = false)
         repository.getAllAsync(object : PostRepository.RepositoryCallback<List<Post>> {
             override fun onSuccess(result: List<Post>) {
-                _data.postValue(FeedModelState(posts = result, empty = result.isEmpty()))
+                _data.value = _data.value?.copy(posts = result, empty = result.isEmpty(), loading = false)
             }
 
             override fun onError(e: Exception) {
-                _data.postValue(FeedModelState(error = true))
+                _data.value = _data.value?.copy(error = true, loading = false, posts = emptyList())
+                _toastMessage.value = ("${e.message}")
             }
         })
 
     }
+
+/*    fun loadAll(){
+        _data.value = _data.value?.copy(loading = true, error = false)
+        repository.getAllPost().enqueue(object : Callback<List<Post>>{
+            override fun onResponse(call: Call<List<Post>>, response: Response<List<Post>>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()?: throw RuntimeException("empty body")
+                    _data.value = (FeedModelState(
+                        posts = responseBody,
+                        empty = responseBody.isEmpty()))
+
+                } else {
+                    _toastMessage.value = ("Неудалось загрузить ленту. \n error code:${response.code()} ")
+                }
+
+            }
+
+            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
+                _data.value = _data.value?.copy(error = true)
+                _toastMessage.value = ("${t.message}")
+            }
+
+        })
+    }
+*/
 
     fun edit(post: Post) {
         edited.value = post
@@ -62,12 +92,17 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 repository.saveAsync(it.copy(content = text),
                     object : PostRepository.RepositoryCallback<Unit> {
                         override fun onSuccess(result: Unit) {
+                            _postCreated.value = (Unit)
                         }
+
                         override fun onError(e: Exception) {
-                            _data.postValue(FeedModelState(error = true))
+                            if (it.id == 0L){
+                                _toastMessage.value = ("Неудалось создать пост \n ${e.message} ")
+                            } else
+                                _toastMessage.value = ("Неудалось изменить пост \n ${e.message} ")
+
                         }
                     })
-                _postCreated.postValue(Unit)
             }
         }
         edited.value = empty
@@ -76,10 +111,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun likeById(id: Long) {
         val likeCallback = object : PostRepository.RepositoryCallback<Post> {
             override fun onSuccess(result: Post) {
+
                 updatedDataLike(result)
+
             }
             override fun onError(e: Exception) {
-                _data.postValue(FeedModelState(error = true))
+                _toastMessage.value = ("${e.message}")
             }
         }
 
@@ -104,24 +141,26 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 post
             }
         }
-        val updatedData = posts?.let { _data.value?.copy(posts = it, empty = it.isEmpty()) }
-        _data.postValue(updatedData)
+        val updatedData = posts?.let { _data.value?.copy(posts = it) }
+        _data.value = (updatedData)
     }
 
     fun removeById(id: Long) {
         val old = _data.value?.posts.orEmpty()
-        _data.postValue(
+        _data.value = (
             _data.value?.copy(posts = _data.value?.posts.orEmpty()
                 .filter { it.id != id }
             )
         )
         repository.removeByIdAsync(id, object : PostRepository.RepositoryCallback<Unit> {
             override fun onSuccess(result: Unit) {
-                _data.postValue(_data.value?.posts?.isEmpty()?.let { FeedModelState(empty = it) })
+                _data.value?.let { if (it.posts.isEmpty()) _data.value = it.copy(empty = true) }
+
             }
 
             override fun onError(e: Exception) {
-                _data.postValue(FeedModelState(posts = old, error = true))
+                _data.value = (FeedModelState(posts = old))
+                _toastMessage.value = ("${e.message}")
             }
         })
     }
