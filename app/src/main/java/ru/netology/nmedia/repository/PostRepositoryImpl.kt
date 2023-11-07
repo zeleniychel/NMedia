@@ -45,34 +45,26 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     }
 
 
-    override suspend fun likeById(id: Long) {
+    override suspend fun likeById(post:Post) {
+        dao.likeById(post.id)
         try {
-            val postResponse = PostsApi.retrofitService.getById(id)
-            if (!postResponse.isSuccessful) {
-                throw ApiError(postResponse.code(), postResponse.message())
-            }
-            val postBody =
-                postResponse.body() ?: throw ApiError(postResponse.code(), postResponse.message())
-            if (postBody.likedByMe) {
-                val response = PostsApi.retrofitService.unlikeById(id)
-                if (!response.isSuccessful) {
-                    throw ApiError(response.code(), response.message())
-                }
-                val body = response.body() ?: throw ApiError(response.code(), response.message())
-                dao.insert(PostEntity.fromDto(body))
+            val response = if (post.likedByMe) {
+                PostsApi.retrofitService.unlikeById(post.id)
             } else {
-                val response = PostsApi.retrofitService.likeById(id)
-                if (!response.isSuccessful) {
-                    throw ApiError(response.code(), response.message())
-                }
-                val body = response.body() ?: throw ApiError(response.code(), response.message())
-                dao.insert(PostEntity.fromDto(body))
+                PostsApi.retrofitService.likeById(post.id)
             }
+            if (!response.isSuccessful) {
+                dao.likeById(post.id)
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError
         }
+
     }
 
     override suspend fun removeById(id: Long) {

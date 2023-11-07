@@ -59,10 +59,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun likeById(id: Long) = viewModelScope.launch {
+    fun likeById(post: Post) = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(error = false)
-            repository.likeById(id)
+            repository.likeById(post)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
