@@ -60,7 +60,7 @@ class PostFragment : Fragment() {
             override fun onPost(post: Post) {}
 
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
+                viewModel.likeById(post)
             }
 
             override fun onRemove(post: Post) {

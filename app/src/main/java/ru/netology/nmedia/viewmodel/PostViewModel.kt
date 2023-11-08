@@ -69,7 +69,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
 
 
-
     }
 
     fun refreshPosts() = viewModelScope.launch {
@@ -92,19 +91,20 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun changeContentAndSave(content: String) {
+        val text = content.trim()
         edited.value?.let {
-            val text = content.trim()
-            if (edited.value?.content != text) {
-                viewModelScope.launch {
-                    try {
-                        repository.save(it)
-                        edited.value = edited.value?.copy(content = text)
-                        _dataState.value = FeedModelState()
-                    } catch (e: Exception) {
-                        _dataState.value = FeedModelState(error = true)
-
-                    }
-                }
+            if (it.content == text) {
+                return
+            }
+            edited.value = it.copy(content = text)
+        }
+        _postCreated.value = Unit
+        viewModelScope.launch {
+            try {
+                edited.value?.let { repository.save(it) }
+                _dataState.value = FeedModelState()
+            } catch (e: Exception) {
+                _dataState.value = FeedModelState(error = true)
             }
         }
         edited.value = empty

@@ -30,6 +30,13 @@ interface PostDao {
         likedByMe = CASE WHEN likedByMe THEN 0 ELSE 1 END
                 WHERE id = :id;
     """)
-    fun likeById(id: Long)
+    suspend fun likeById(id: Long)
 
+//    @Query("""UPDATE PostEntity SET
+//        isSaved = 1 WHERE id =:id
+//    """)
+//    fun changeFlag(id: Long)
+//
+//    @Query("SELECT isSaved FROM PostEntity WHERE id = :id")
+//    suspend fun getIsSavedById(id: Long): Boolean
 }

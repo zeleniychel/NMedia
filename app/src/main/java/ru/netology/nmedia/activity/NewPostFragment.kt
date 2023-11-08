@@ -49,6 +49,7 @@ class NewPostFragment : Fragment() {
                 val content = binding.edit.text.toString()
                 viewModel.changeContentAndSave(content)
                 viewModel.draft = null
+                findNavController().navigateUp()
             }
         }
         viewModel.postCreated.observe(viewLifecycleOwner) {

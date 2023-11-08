@@ -46,6 +46,9 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
 
     override suspend fun likeById(post:Post) {
+//        if (!dao.getIsSavedById(post.id)){
+//            return
+//        }
         dao.likeById(post.id)
         try {
             val response = if (post.likedByMe) {
@@ -82,18 +85,37 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     }
 
     override suspend fun save(post: Post) {
+//        val newPost = post.copy(id = data.value?.last()?.id?.plus(1) ?: 1)
+//        dao.insert(PostEntity.fromDto(newPost))
         try {
             val response = PostsApi.retrofitService.save(post)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(body))
+//            val body = response.body() ?: throw ApiError(response.code(), response.message())
+//            dao.changeFlag(body.id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError
         }
     }
+
+//    override suspend fun save(post: Post) {
+//        try {
+//            val response = PostsApi.retrofitService.save(post)
+//            if (!response.isSuccessful) {
+//                throw ApiError(response.code(), response.message())
+//            }
+//
+//            val body = response.body() ?: throw ApiError(response.code(), response.message())
+//            dao.insert(PostEntity.fromDto(body))
+//        } catch (e: IOException) {
+//            throw NetworkError
+//        } catch (e: Exception) {
+//            throw UnknownError
+//        }
+//    }
 }
