@@ -18,7 +18,7 @@ data class PostEntity(
     val likes: Int = 0,
     @TypeConverters(ru.netology.nmedia.db.Converters::class)
     val attachment: Attachment? = null,
-//    val isSaved:Boolean = false
+    val isSaved:Boolean = false
 ) {
     fun toDto() = Post(id, author, authorAvatar, content, published, likedByMe, likes, attachment)
 
@@ -33,8 +33,7 @@ data class PostEntity(
                 dto.likedByMe,
                 dto.likes,
                 dto.attachment,
-//                isSaved = false
-
+                isSaved = true
             )
 
     }

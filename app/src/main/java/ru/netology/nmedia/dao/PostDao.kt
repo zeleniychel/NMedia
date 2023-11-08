@@ -32,11 +32,6 @@ interface PostDao {
     """)
     suspend fun likeById(id: Long)
 
-//    @Query("""UPDATE PostEntity SET
-//        isSaved = 1 WHERE id =:id
-//    """)
-//    fun changeFlag(id: Long)
-//
-//    @Query("SELECT isSaved FROM PostEntity WHERE id = :id")
-//    suspend fun getIsSavedById(id: Long): Boolean
+    @Query("SELECT isSaved FROM PostEntity WHERE id = :id")
+    suspend fun getIsSavedById(id: Long): Boolean
 }
