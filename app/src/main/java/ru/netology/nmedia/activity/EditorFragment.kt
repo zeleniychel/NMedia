@@ -40,6 +40,7 @@ class EditorFragment : Fragment() {
             if (!binding.edit.text.isNullOrBlank()) {
                 val content = binding.edit.text.toString()
                 viewModel.changeContentAndSave(content)
+                findNavController().navigateUp()
             }
             viewModel.clearEdit()
         }
