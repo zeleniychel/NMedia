@@ -92,9 +92,17 @@ class FeedFragment : Fragment() {
         }
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.posts)
-            binding.list.smoothScrollToPosition(0)
+            val newPost = state.posts.size > adapter.currentList.size && adapter.itemCount > 0
+            adapter.submitList(state.posts){
+                if (newPost){
+                    binding.list.smoothScrollToPosition(0)
+                }
+            }
             binding.emptyText.isVisible = state.empty
+        }
+
+        viewModel.newerCount.observe(viewLifecycleOwner){
+
         }
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()
