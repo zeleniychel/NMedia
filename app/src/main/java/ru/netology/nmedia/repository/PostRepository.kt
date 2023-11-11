@@ -8,6 +8,7 @@ interface PostRepository {
     suspend fun getAll()
     suspend fun getById(id:Long)
     fun getNewerCount(id: Long): Flow<Int>
+    suspend fun changeIsHiddenFlag()
     suspend fun likeById(post:Post)
     suspend fun removeById(id: Long)
     suspend fun save(post: Post)

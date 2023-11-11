@@ -18,12 +18,13 @@ data class PostEntity(
     val likes: Int = 0,
     @TypeConverters(ru.netology.nmedia.db.Converters::class)
     val attachment: Attachment? = null,
-    val isSaved:Boolean = false
+    val isSaved:Boolean = true,
+    val isHidden: Boolean = false
 ) {
     fun toDto() = Post(id, author, authorAvatar, content, published, likedByMe, likes, attachment)
 
     companion object {
-        fun fromDto(dto: Post) =
+        fun fromDto(dto: Post, isSaved: Boolean = true, isHidden: Boolean = false) =
             PostEntity(
                 dto.id,
                 dto.author,
@@ -33,11 +34,12 @@ data class PostEntity(
                 dto.likedByMe,
                 dto.likes,
                 dto.attachment,
-                isSaved = true
+                isSaved = isSaved,
+                isHidden = isHidden
             )
 
     }
 }
 
 fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)
-fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)
+fun List<Post>.toEntity(isSaved:Boolean = true, isHidden: Boolean = false): List<PostEntity> = map { PostEntity.fromDto(it,isSaved,isHidden) }

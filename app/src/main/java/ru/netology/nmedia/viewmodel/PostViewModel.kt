@@ -84,6 +84,16 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
+    fun changeIsHiddenFlag() = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(error = false)
+            repository.changeIsHiddenFlag()
+            _dataState.value = FeedModelState()
+        } catch (e:Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
+    }
+
     fun refreshPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true, error = false)

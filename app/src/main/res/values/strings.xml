@@ -28,4 +28,5 @@
     <string name="error_loading">loading error</string>
     <string name="retry_loading">retry loading</string>
     <string name="attachmentImage">Attachment Image</string>
+    <string name="load_new_posts">New posts %1$s</string>
 </resources>

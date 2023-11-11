@@ -56,10 +56,14 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(body.toEntity())
-            emit(body.size)
+            dao.insert(body.toEntity(isHidden = true))
+            emit(dao.getIsHiddenCount())
         }
 
+    }
+
+    override suspend fun changeIsHiddenFlag() {
+        dao.changeIsHiddenFlag()
     }
 
 
