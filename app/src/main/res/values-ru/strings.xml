@@ -29,5 +29,5 @@
     <string name="error_loading">Ошибка загурзки</string>
     <string name="retry_loading">Повторить загрузку</string>
     <string name="attachmentImage">Изображение вложения</string>
-    <string name="load_new_posts">Новые записи %1$s</string>
+    <string name="load_new_posts">Новые записи %1$d</string>
 </resources>
