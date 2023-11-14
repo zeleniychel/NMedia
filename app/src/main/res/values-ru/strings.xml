@@ -30,4 +30,7 @@
     <string name="retry_loading">Повторить загрузку</string>
     <string name="attachmentImage">Изображение вложения</string>
     <string name="load_new_posts">Новые записи %1$d</string>
+    <string name="remove">Remove</string>
+    <string name="description_post_comments">Post Comments\n</string>
+    <string name="preview">Preview</string>
 </resources>
