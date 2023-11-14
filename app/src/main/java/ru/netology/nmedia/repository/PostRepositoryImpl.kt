@@ -1,6 +1,10 @@
 package ru.netology.nmedia.repository
 
-import androidx.lifecycle.map
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import ru.netology.nmedia.api.PostsApi
 import ru.netology.nmedia.dao.PostDao
 import ru.netology.nmedia.dto.Post
@@ -42,6 +46,24 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         } catch (e: Exception) {
             throw UnknownError
         }
+    }
+
+    override fun getNewerCount(id: Long): Flow<Int> = flow {
+        while (true){
+            delay(10_000L)
+            val response = PostsApi.retrofitService.getNewer(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(body.toEntity(isHidden = true))
+            emit(dao.getIsHiddenCount())
+        }
+
+    }
+
+    override suspend fun changeIsHiddenFlag() {
+        dao.changeIsHiddenFlag()
     }
 
 
@@ -87,7 +109,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     }
 
     override suspend fun save(post: Post) {
-        val newPost = post.copy(id = data.value?.first()?.id?.plus(1) ?: 1)
+        val newPost = post.copy(id = data.firstOrNull()?.first()?.id?.plus(1) ?: 1)
         dao.insert(PostEntity.fromDto(newPost).copy(isSaved = false))
         try {
             val response = PostsApi.retrofitService.save(post)

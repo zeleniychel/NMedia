@@ -92,16 +92,36 @@ class FeedFragment : Fragment() {
         }
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.posts)
-            binding.list.smoothScrollToPosition(0)
+            val newPost = state.posts.size > adapter.currentList.size && adapter.itemCount > 0
+            adapter.submitList(state.posts){
+                if (newPost){
+                    binding.list.smoothScrollToPosition(0)
+                }
+            }
             binding.emptyText.isVisible = state.empty
         }
+
+        viewModel.newerCount.observe(viewLifecycleOwner){
+            if (it > 0){
+                binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
+                binding.loadNewPosts.show()
+
+            }
+
+        }
+
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()
         }
 
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+        }
+
+        binding.loadNewPosts.setOnClickListener {
+            viewModel.changeIsHiddenFlag()
+            binding.list.smoothScrollToPosition(0)
+            binding.loadNewPosts.hide()
         }
 
         return binding.root
