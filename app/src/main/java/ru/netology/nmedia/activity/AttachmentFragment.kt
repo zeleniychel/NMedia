@@ -43,8 +43,6 @@ class AttachmentFragment : Fragment() {
         )
         binding.apply {
             topAppBar.title = "1 of 1"
-            likes.text = postArg?.let { Converter.convertNumber(it.likes) }
-            likes.isChecked = postArg?.likedByMe ?: false
             shares.text = "0"
             comments.text = "0"
             preview.loadAttachment("http://10.0.2.2:9999/media/${postArg?.attachment?.url}")
@@ -60,11 +58,11 @@ class AttachmentFragment : Fragment() {
             viewModel.likeById(postArg ?: Post())
         }
 
-
-
-
-
-
+        viewModel.data.observe(viewLifecycleOwner) {
+            val post = it.posts.find { (id) -> id == postArg?.id } ?: Post()
+            binding.likes.text = post.let { Converter.convertNumber(post.likes) }
+            binding.likes.isChecked = post.likedByMe
+        }
         return binding.root
     }
 }
