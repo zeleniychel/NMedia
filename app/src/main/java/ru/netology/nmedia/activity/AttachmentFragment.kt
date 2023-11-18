@@ -30,7 +30,6 @@ class AttachmentFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.hide()
 
         val postArg = arguments?.getParcelableCompat<Post>("key")
-        val post = viewModel.data.value?.posts?.find { (id) -> id == postArg?.id } ?: Post()
 
         val binding = FragmentAttachmentBinding.inflate(layoutInflater)
 
@@ -47,7 +46,7 @@ class AttachmentFragment : Fragment() {
             topAppBar.title = "1 of 1"
             shares.text = "0"
             comments.text = "0"
-            preview.loadAttachment("http://10.0.2.2:9999/media/${post.attachment?.url}")
+            preview.loadAttachment("http://10.0.2.2:9999/media/${postArg?.attachment?.url}")
         }
 
         binding.topAppBar.setNavigationOnClickListener {
@@ -55,15 +54,13 @@ class AttachmentFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar?.show()
         }
 
-
-
-        binding.likes.setOnClickListener {
-            viewModel.likeById(post)
-        }
-
         viewModel.data.observe(viewLifecycleOwner) {
+            val post = it.posts.find { (id) -> id == postArg?.id } ?: return@observe
             binding.likes.text = post.let { Converter.convertNumber(post.likes) }
             binding.likes.isChecked = post.likedByMe
+            binding.likes.setOnClickListener {
+                viewModel.likeById(post)
+            }
         }
         return binding.root
     }

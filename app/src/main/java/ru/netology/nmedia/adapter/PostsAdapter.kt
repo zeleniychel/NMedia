@@ -54,6 +54,8 @@ class PostViewHolder(
             if (post.attachment != null) {
                 attachmentImage.loadAttachment("http://10.0.2.2:9999/media/${post.attachment.url}")
                 attachmentImage.visibility = View.VISIBLE
+            } else {
+                attachmentImage.visibility = View.GONE
             }
 
 
