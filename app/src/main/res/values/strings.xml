@@ -32,4 +32,7 @@
     <string name="remove">Remove</string>
     <string name="description_post_comments">Post Comments\n</string>
     <string name="preview">Preview</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up\n</string>
+    <string name="sign_out">Sign Out</string>
 </resources>
