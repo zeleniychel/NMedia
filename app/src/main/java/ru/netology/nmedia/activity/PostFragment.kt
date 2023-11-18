@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -54,7 +55,11 @@ class PostFragment : Fragment() {
 
             }
 
-            override fun onPlay(post: Post) {
+            override fun onAttachment(post: Post) {
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_attachmentFragment,
+                    bundleOf("key" to post)
+                )
             }
 
             override fun onPost(post: Post) {}

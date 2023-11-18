@@ -28,5 +28,8 @@
     <string name="error_loading">loading error</string>
     <string name="retry_loading">retry loading</string>
     <string name="attachmentImage">Attachment Image</string>
-    <string name="load_new_posts">New posts %1$s</string>
+    <string name="load_new_posts">New posts %1$d</string>
+    <string name="remove">Remove</string>
+    <string name="description_post_comments">Post Comments\n</string>
+    <string name="preview">Preview</string>
 </resources>

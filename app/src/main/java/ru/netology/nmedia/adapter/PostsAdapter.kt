@@ -19,8 +19,8 @@ interface OnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onShare(post: Post) {}
-    fun onPlay(post: Post) {}
-    fun onPost(post:Post){}
+    fun onAttachment(post: Post) {}
+    fun onPost(post: Post) {}
 
 }
 
@@ -51,9 +51,11 @@ class PostViewHolder(
             likes.isChecked = post.likedByMe
             likes.text = Converter.convertNumber(post.likes)
             avatar.load("http://10.0.2.2:9999/avatars/${post.authorAvatar}")
-            if (post.attachment != null){
-                attachmentImage.loadAttachment("http://10.0.2.2:9999/images/${post.attachment.url}")
+            if (post.attachment != null) {
+                attachmentImage.loadAttachment("http://10.0.2.2:9999/media/${post.attachment.url}")
                 attachmentImage.visibility = View.VISIBLE
+            } else {
+                attachmentImage.visibility = View.GONE
             }
 
 
@@ -88,6 +90,9 @@ class PostViewHolder(
             }
             root.setOnClickListener {
                 onInteractionListener.onPost(post)
+            }
+            attachmentImage.setOnClickListener {
+                onInteractionListener.onAttachment(post)
             }
 
 

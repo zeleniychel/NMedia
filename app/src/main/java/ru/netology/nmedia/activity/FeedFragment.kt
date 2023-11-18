@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.EditorFragment.Companion.content
+import ru.netology.nmedia.activity.EditorFragment.Companion.url
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.databinding.FragmentFeedBinding
@@ -54,10 +55,15 @@ class FeedFragment : Fragment() {
                 findNavController().navigate(R.id.action_feedFragment_to_editorFragment,
                     Bundle().apply {
                         content = post.content
+                        url = post.attachment?.url
                     })
             }
 
-            override fun onPlay(post: Post) {
+            override fun onAttachment(post: Post) {
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_attachmentFragment,
+                    bundleOf("key" to post)
+                )
             }
 
             override fun onPost(post: Post) {
@@ -93,16 +99,16 @@ class FeedFragment : Fragment() {
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
             val newPost = state.posts.size > adapter.currentList.size && adapter.itemCount > 0
-            adapter.submitList(state.posts){
-                if (newPost){
+            adapter.submitList(state.posts) {
+                if (newPost) {
                     binding.list.smoothScrollToPosition(0)
                 }
             }
             binding.emptyText.isVisible = state.empty
         }
 
-        viewModel.newerCount.observe(viewLifecycleOwner){
-            if (it > 0){
+        viewModel.newerCount.observe(viewLifecycleOwner) {
+            if (it > 0) {
                 binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
                 binding.loadNewPosts.show()
 

@@ -70,7 +70,9 @@ dependencies {
     def retrofitgson_version = "2.9.0"
     def okhttplogging_version = "4.12.0"
     def coroutines_version = "1.7.3"
+    def imagepicker_version = "2.1"
 
+    implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
