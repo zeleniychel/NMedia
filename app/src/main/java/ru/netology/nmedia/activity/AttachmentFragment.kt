@@ -53,9 +53,6 @@ class AttachmentFragment : Fragment() {
             findNavController().navigateUp()
             (activity as AppCompatActivity).supportActionBar?.show()
         }
-
-
-
         viewModel.data.observe(viewLifecycleOwner) {
             val post = it.posts.find { (id) -> id == postArg?.id } ?: return@observe
             binding.likes.text = post.let { Converter.convertNumber(post.likes) }

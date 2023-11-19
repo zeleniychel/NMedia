@@ -36,4 +36,6 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up\n</string>
     <string name="sign_out">Sign Out</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
 </resources>

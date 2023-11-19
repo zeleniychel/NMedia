@@ -82,6 +82,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onShare(post: Post) {
+                findNavController().navigate(R.id.signInFragment)
             }
         })
 
