@@ -13,7 +13,7 @@ import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import java.io.IOException
 
-class SignInViewModel(application: Application) : AndroidViewModel(application) {
+class SignUpViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _errorMessage = MutableStateFlow("")
     val errorMessage: StateFlow<String> = _errorMessage
@@ -24,29 +24,19 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
     private val repository: PostRepository =
         PostRepositoryImpl(AppDb.getInstance(application).postDao())
 
-    fun updateUser(login: String, password: String) = viewModelScope.launch {
+    fun registerUser(login: String, password: String, name: String) = viewModelScope.launch {
         try {
-            val user = repository.updateUser(login, password)
+            val user = repository.registerUser(login, password, name)
             user.token?.let { AppAuth.getInstance().setAuth(user.id, it) }
             _authentication.value = AppAuth.getInstance().authState.value.id != 0L
         } catch (e: Exception) {
-
-
             when (e) {
                 is IOException -> {
                     _errorMessage.value = "Network error"
                 }
 
                 is ApiError -> {
-                    when (e.code) {
-                        "404" -> {
-                            _errorMessage.value = "User not found"
-                        }
-
-                        else -> {
-                            _errorMessage.value = "Api error"
-                        }
-                    }
+                    _errorMessage.value = "Api error"
                 }
 
                 else -> {

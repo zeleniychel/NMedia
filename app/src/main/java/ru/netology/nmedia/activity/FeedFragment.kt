@@ -16,6 +16,7 @@ import ru.netology.nmedia.activity.EditorFragment.Companion.content
 import ru.netology.nmedia.activity.EditorFragment.Companion.url
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
+import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.viewmodel.PostViewModel
@@ -74,7 +75,12 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: Post) {
-                viewModel.likeById(post)
+                if (AppAuth.getInstance().authState.value.id == 0L) {
+                    LoginDialog().show(childFragmentManager, "")
+                } else {
+                    viewModel.likeById(post)
+                }
+
             }
 
             override fun onRemove(post: Post) {
@@ -82,9 +88,10 @@ class FeedFragment : Fragment() {
             }
 
             override fun onShare(post: Post) {
-                findNavController().navigate(R.id.signInFragment)
             }
         })
+
+
 
         binding.list.adapter = adapter
 
@@ -122,7 +129,12 @@ class FeedFragment : Fragment() {
         }
 
         binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            if (AppAuth.getInstance().authState.value.id == 0L) {
+                LoginDialog().show(childFragmentManager, "")
+            } else {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            }
+
         }
 
         binding.loadNewPosts.setOnClickListener {

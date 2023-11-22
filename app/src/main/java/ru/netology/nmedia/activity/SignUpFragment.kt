@@ -14,13 +14,13 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import ru.netology.nmedia.databinding.FragmentSignInBinding
+import ru.netology.nmedia.databinding.FragmentSignUpBinding
 import ru.netology.nmedia.util.AndroidUtils
-import ru.netology.nmedia.viewmodel.SignInViewModel
+import ru.netology.nmedia.viewmodel.SignUpViewModel
 
-class SignInFragment : Fragment() {
+class SignUpFragment : Fragment() {
 
-    private val viewModel by viewModels<SignInViewModel>()
+    private val viewModel by viewModels<SignUpViewModel>()
 
 
     override fun onCreateView(
@@ -29,7 +29,7 @@ class SignInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val binding = FragmentSignInBinding.inflate(layoutInflater)
+        val binding = FragmentSignUpBinding.inflate(layoutInflater)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -40,19 +40,26 @@ class SignInFragment : Fragment() {
         )
 
 
-        binding.signIn.setOnClickListener {
+        binding.signUp.setOnClickListener {
             AndroidUtils.hideKeyboard(requireView())
-            viewModel.updateUser(
-                binding.loginInput.text.toString(),
-                binding.passwordInput.text.toString()
-            )
-            lifecycleScope.launch {
-                lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                    viewModel.authentication.collectLatest {
-                        if (it) findNavController().navigateUp()
+
+            if (binding.passwordInput.text.toString() != binding.passwordConfirmationInput.text.toString()) {
+                Snackbar.make(binding.root, "Passwords don't match", Snackbar.LENGTH_LONG).show()
+            } else {
+                viewModel.registerUser(
+                    binding.loginInput.text.toString(),
+                    binding.passwordConfirmationInput.text.toString(),
+                    binding.nameInput.text.toString()
+                )
+                lifecycleScope.launch {
+                    lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                        viewModel.authentication.collectLatest {
+                            if (it) findNavController().navigateUp()
+                        }
                     }
                 }
             }
+
             if (viewModel.errorMessage.value.isNotEmpty()) {
                 Snackbar.make(binding.root, viewModel.errorMessage.value, Snackbar.LENGTH_LONG)
                     .show()

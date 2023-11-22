@@ -91,7 +91,6 @@ class NewPostFragment : Fragment() {
                 }
         }, viewLifecycleOwner)
 
-
         binding.takePhoto.setOnClickListener {
             ImagePicker.Builder(this)
                 .crop()

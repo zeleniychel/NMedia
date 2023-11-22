@@ -15,6 +15,7 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -44,7 +45,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 return@let
             }
             intent.removeExtra(Intent.EXTRA_TEXT)
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
             navHostFragment.navController.navigate(
                 R.id.action_feedFragment_to_newPostFragment,
                 Bundle().apply {
@@ -53,37 +55,40 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             )
         }
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED){
-                viewModel.data.collect{
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.data.collect {
                     invalidateOptionsMenu()
                 }
             }
         }
 
-        addMenuProvider(object :MenuProvider{
+        addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-               menuInflater.inflate(R.menu.menu_main,menu)
+                menuInflater.inflate(R.menu.menu_main, menu)
             }
 
             override fun onPrepareMenu(menu: Menu) {
-                menu.setGroupVisible(R.id.authenticated,viewModel.authenticated)
-                menu.setGroupVisible(R.id.unauthenticated,!viewModel.authenticated)
+                menu.setGroupVisible(R.id.authenticated, viewModel.authenticated)
+                menu.setGroupVisible(R.id.unauthenticated, !viewModel.authenticated)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId){
+                return when (menuItem.itemId) {
                     R.id.signin -> {
+                        findNavController(R.id.container).navigate(R.id.signInFragment)
+                        true
+                    }
 
-                        true
-                    }
                     R.id.signup -> {
-                        AppAuth.getInstance().setAuth(5,"x-token")
+                        findNavController(R.id.container).navigate(R.id.signUpFragment)
                         true
                     }
+
                     R.id.signout -> {
                         AppAuth.getInstance().removeAuth()
                         true
                     }
+
                     else -> false
                 }
 
@@ -93,6 +98,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         })
         checkGoogleApiAvailability()
     }
+
     private fun requestNotificationsPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return
