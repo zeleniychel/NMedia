@@ -85,6 +85,9 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                     }
 
                     R.id.signout -> {
+                        if (findNavController(R.id.container).currentDestination?.id == R.id.newPostFragment){
+                            LogoutDialog().show(supportFragmentManager,"")
+                        }
                         AppAuth.getInstance().removeAuth()
                         true
                     }
