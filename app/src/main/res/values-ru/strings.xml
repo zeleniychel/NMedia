@@ -33,4 +33,11 @@
     <string name="remove">Remove</string>
     <string name="description_post_comments">Post Comments\n</string>
     <string name="preview">Preview</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
+    <string name="name">name</string>
+    <string name="password_confirmation">confirmation</string>
 </resources>

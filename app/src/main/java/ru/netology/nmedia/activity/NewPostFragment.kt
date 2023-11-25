@@ -86,11 +86,9 @@ class NewPostFragment : Fragment() {
                         AndroidUtils.hideKeyboard(requireView())
                         true
                     }
-
                     else -> false
                 }
         }, viewLifecycleOwner)
-
 
         binding.takePhoto.setOnClickListener {
             ImagePicker.Builder(this)

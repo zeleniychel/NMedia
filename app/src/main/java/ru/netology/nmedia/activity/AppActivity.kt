@@ -5,16 +5,30 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.NewPostFragment.Companion.textArg
+import ru.netology.nmedia.auth.AppAuth
+import ru.netology.nmedia.viewmodel.AuthViewModel
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
+
+    val viewModel by viewModels<AuthViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +45,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 return@let
             }
             intent.removeExtra(Intent.EXTRA_TEXT)
-            val navHostFragment = supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
             navHostFragment.navController.navigate(
                 R.id.action_feedFragment_to_newPostFragment,
                 Bundle().apply {
@@ -39,9 +54,55 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
                 }
             )
         }
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.data.collect {
+                    invalidateOptionsMenu()
+                }
+            }
+        }
 
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_main, menu)
+            }
+
+            override fun onPrepareMenu(menu: Menu) {
+                menu.setGroupVisible(R.id.authenticated, viewModel.authenticated)
+                menu.setGroupVisible(R.id.unauthenticated, !viewModel.authenticated)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.signin -> {
+                        findNavController(R.id.container).navigate(R.id.signInFragment)
+                        true
+                    }
+
+                    R.id.signup -> {
+                        findNavController(R.id.container).navigate(R.id.signUpFragment)
+                        true
+                    }
+
+                    R.id.signout -> {
+                        if (findNavController(R.id.container).currentDestination?.id == R.id.newPostFragment){
+                            LogoutDialog().show(supportFragmentManager,"")
+                        } else{
+                            AppAuth.getInstance().removeAuth()
+                        }
+                        true
+                    }
+
+                    else -> false
+                }
+
+
+            }
+
+        })
         checkGoogleApiAvailability()
     }
+
     private fun requestNotificationsPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             return
