@@ -75,7 +75,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLike(post: Post) {
-                if (AppAuth.getInstance().authState.value.id == 0L) {
+                if (AppAuth.getInstance().authStateFlow.value.id == 0L) {
                     LoginDialog().show(childFragmentManager, "")
                 } else {
                     viewModel.likeById(post)
@@ -129,7 +129,7 @@ class FeedFragment : Fragment() {
         }
 
         binding.fab.setOnClickListener {
-            if (AppAuth.getInstance().authState.value.id == 0L) {
+            if (AppAuth.getInstance().authStateFlow.value.id == 0L) {
                 LoginDialog().show(childFragmentManager, "")
             } else {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)

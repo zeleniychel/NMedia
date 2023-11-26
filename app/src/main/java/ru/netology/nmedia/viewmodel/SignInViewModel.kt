@@ -28,7 +28,7 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
         try {
             val user = repository.updateUser(login, password)
             user.token?.let { AppAuth.getInstance().setAuth(user.id, it) }
-            _authentication.value = AppAuth.getInstance().authState.value.id != 0L
+            _authentication.value = AppAuth.getInstance().authStateFlow.value.id != 0L
         } catch (e: Exception) {
 
 

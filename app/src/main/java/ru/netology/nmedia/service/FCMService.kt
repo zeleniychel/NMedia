@@ -17,6 +17,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.AppActivity
+import ru.netology.nmedia.auth.AppAuth
 import kotlin.random.Random
 
 class FCMService: FirebaseMessagingService() {
@@ -38,6 +39,28 @@ class FCMService: FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
+
+        val id = AppAuth.getInstance().authStateFlow.value.id
+        val pushMessage = Gson().fromJson(message.data["content"], PushMessage::class.java)
+        when{
+            pushMessage.recipientId == null-> {
+                handlePushMessage(pushMessage)
+            }
+            pushMessage.recipientId == 0L && pushMessage.recipientId != id ->{
+                AppAuth.getInstance().sendPushToken()
+            }
+
+            pushMessage.recipientId == id -> {
+                handlePushMessage(pushMessage)
+            }
+            pushMessage.recipientId != 0L && pushMessage.recipientId != id -> {
+                AppAuth.getInstance().sendPushToken()
+            }
+            else -> {
+                Log.d("FSM", message.data.toString())
+            }
+        }
+
         message.data["action"]?.let { action ->
             when (Actions.values().find {it.name == action}) {
                 Actions.LIKE -> handleLike(Gson().fromJson(message.data["content"], Like::class.java))
@@ -46,6 +69,27 @@ class FCMService: FirebaseMessagingService() {
             }
         }
         println(Gson().toJson(message))
+    }
+
+    private fun handlePushMessage(pushMessage: PushMessage){
+
+        val intent = Intent(this, AppActivity::class.java)
+        val pi = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_IMMUTABLE)
+        val notification = NotificationCompat.Builder(this,channelId)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentText(pushMessage.content)
+            .setContentIntent(pi)
+            .setAutoCancel(true)
+            .build()
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
+        NotificationManagerCompat.from(this).notify(
+            Random.nextInt(100_00),
+            notification
+        )
     }
     private fun handleLike(like: Like){
 
@@ -91,7 +135,7 @@ class FCMService: FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        println(token)
+        AppAuth.getInstance().sendPushToken(token)
     }
 }
 
@@ -110,4 +154,9 @@ data class Like (
 data class NewPost (
     val postAuthor: String,
     val contentNewPost: String
+)
+
+data class PushMessage(
+    val recipientId: Long?,
+    val content: String
 )
