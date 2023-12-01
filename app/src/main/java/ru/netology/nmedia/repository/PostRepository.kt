@@ -2,6 +2,7 @@ package ru.netology.nmedia.repository
 
 import kotlinx.coroutines.flow.Flow
 import ru.netology.nmedia.auth.AuthState
+import ru.netology.nmedia.dto.MediaUpload
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.PhotoModel
 
@@ -17,5 +18,7 @@ interface PostRepository {
     suspend fun save(post: Post)
     suspend fun updateUser(login: String, password: String): AuthState
     suspend fun registerUser(login: String, password: String, name: String): AuthState
+    suspend fun saveWork(post: Post, upload: MediaUpload?): Long
+    suspend fun processWork(id: Long)
 }
 

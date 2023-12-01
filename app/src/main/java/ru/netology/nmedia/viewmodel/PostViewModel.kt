@@ -8,6 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
@@ -16,6 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.db.AppDb
+import ru.netology.nmedia.dto.MediaUpload
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
 import ru.netology.nmedia.model.FeedModelState
@@ -23,6 +29,7 @@ import ru.netology.nmedia.model.PhotoModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
+import ru.netology.nmedia.work.SavePostWorker
 import java.io.File
 
 private val empty = Post(
@@ -38,7 +45,13 @@ private val empty = Post(
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository =
-        PostRepositoryImpl(AppDb.getInstance(application).postDao())
+        PostRepositoryImpl(
+            AppDb.getInstance(application).postDao(),
+            AppDb.getInstance(application).postWorkDao()
+        )
+
+    private val workManager: WorkManager =
+        WorkManager.getInstance(application)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val data: LiveData<FeedModel> = AppAuth.getInstance()
@@ -145,11 +158,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         _postCreated.value = Unit
         viewModelScope.launch {
             try {
-                val photoModel = _photo.value
-                if (photoModel == null) {
-                    edited.value?.let { repository.save(it) }
-                } else
-                    edited.value?.let { repository.saveWithAttachment(it, photoModel) }
+                val id = edited.value?.let { post ->
+                    repository.saveWork(post, _photo.value?.file.let { MediaUpload(it.toFile) })
+                }
+                val data = workDataOf(SavePostWorker.postKey to id)
+                val constraints = Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+                val request = OneTimeWorkRequestBuilder<SavePostWorker>()
+                    .setInputData(data)
+                    .setConstraints(constraints)
+                    .build()
+                workManager.enqueue(request)
                 _dataState.value = FeedModelState()
             } catch (e: Exception) {
                 _dataState.value = FeedModelState(error = true)
@@ -158,11 +178,26 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = empty
     }
 
-    fun edit(post: Post) {
-        edited.value = post
-    }
+//                val photoModel = _photo.value
+//                if (photoModel == null) {
+//                    edited.value?.let { repository.save(it) }
+//                } else
+//                    edited.value?.let { repository.saveWithAttachment(it, photoModel) }
+//                _dataState.value = FeedModelState()
+//            } catch (e: Exception) {
+//                _dataState.value = FeedModelState(error = true)
+//            }
+//        }
+//        edited.value = empty
+//            }
 
-    fun clearEdit() {
-        edited.value = empty
-    }
-}
+
+
+            fun edit(post: Post) {
+                edited.value = post
+            }
+
+            fun clearEdit() {
+                edited.value = empty
+            }
+        }
