@@ -7,8 +7,9 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.EditorFragment.Companion.content
 import ru.netology.nmedia.adapter.OnInteractionListener
@@ -19,12 +20,10 @@ import ru.netology.nmedia.util.getParcelableCompat
 import ru.netology.nmedia.viewmodel.PostViewModel
 
 
+@AndroidEntryPoint
 class PostFragment : Fragment() {
 
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
-
+    private val viewModel: PostViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
