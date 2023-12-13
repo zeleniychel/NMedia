@@ -9,9 +9,13 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.EditorFragment.Companion.content
 import ru.netology.nmedia.activity.EditorFragment.Companion.url
@@ -49,6 +53,7 @@ class FeedFragment : Fragment() {
                 }
             }
         )
+
         binding.swiperefresh.setOnRefreshListener {
             viewModel.load()
             binding.swiperefresh.isRefreshing = false
@@ -84,7 +89,6 @@ class FeedFragment : Fragment() {
                 } else {
                     viewModel.likeById(post)
                 }
-
             }
 
             override fun onRemove(post: Post) {
@@ -109,26 +113,36 @@ class FeedFragment : Fragment() {
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            val newPost = state.posts.size > adapter.currentList.size && adapter.itemCount > 0
-            adapter.submitList(state.posts) {
-                if (newPost) {
-                    binding.list.smoothScrollToPosition(0)
-                }
+        lifecycleScope.launch {
+            viewModel.data.collectLatest {
+                adapter.submitData(it)
             }
-            binding.emptyText.isVisible = state.empty
+        }
+
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest {
+                it.refresh is LoadState.Loading
+                        || it.append is LoadState.Loading
+                        || it.prepend is LoadState.Loading
+            }
         }
 
         viewModel.newerCount.observe(viewLifecycleOwner) {
             if (it > 0) {
                 binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
                 binding.loadNewPosts.show()
-
             }
+        }
 
+
+        binding.loadNewPosts.setOnClickListener {
+            viewModel.changeIsHiddenFlag()
+            binding.list.smoothScrollToPosition(0)
+            binding.loadNewPosts.hide()
         }
 
         binding.swiperefresh.setOnRefreshListener {
+            adapter.refresh()
             viewModel.refreshPosts()
         }
 
@@ -138,15 +152,7 @@ class FeedFragment : Fragment() {
             } else {
                 findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
             }
-
         }
-
-        binding.loadNewPosts.setOnClickListener {
-            viewModel.changeIsHiddenFlag()
-            binding.list.smoothScrollToPosition(0)
-            binding.loadNewPosts.hide()
-        }
-
         return binding.root
     }
 }

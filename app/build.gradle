@@ -74,6 +74,7 @@ dependencies {
     def coroutines_version = "1.7.3"
     def imagepicker_version = "2.1"
     def hilt_version = "2.49"
+    def paging_version = "3.1.0"
 
     implementation "com.github.dhaval2404:imagepicker:$imagepicker_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
@@ -101,6 +102,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
     implementation "com.google.dagger:hilt-android:$hilt_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
 

@@ -1,5 +1,7 @@
 package ru.netology.nmedia.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -30,7 +32,17 @@ class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
     private val apiService: PostsApiService
     ) : PostRepository {
-    override val data = dao.getAll().map(List<PostEntity>::toDto)
+    override val data = Pager(
+        config = PagingConfig(pageSize = 10, enablePlaceholders = false),
+        pagingSourceFactory = {
+            PostPagingSource(
+                apiService
+            )
+        }
+    ).flow
+
+    private val dataDb = dao.getAll().map(List<PostEntity>::toDto)
+
     override suspend fun getAll() {
         try {
             val response = apiService.getAll()
@@ -123,9 +135,9 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun save(post: Post) {
         val newPost = if (post.id == 0L) {
-            post.copy(id = data.firstOrNull()?.first()?.id?.plus(1) ?: 1)
+            post.copy(id = dataDb.firstOrNull()?.first()?.id?.plus(1) ?: 1)
         } else {
-            post.copy(id = data.firstOrNull()?.first()?.id ?: 1)
+            post.copy(id = dataDb.firstOrNull()?.first()?.id ?: 1)
         }
         dao.insert(PostEntity.fromDto(newPost).copy(isSaved = false))
         try {
@@ -145,9 +157,9 @@ class PostRepositoryImpl @Inject constructor(
 
     override suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel) {
         val newPost = if (post.id == 0L) {
-            post.copy(id = data.firstOrNull()?.first()?.id?.plus(1) ?: 1)
+            post.copy(id = dataDb.firstOrNull()?.first()?.id?.plus(1) ?: 1)
         } else {
-            post.copy(id = data.firstOrNull()?.first()?.id ?: 1)
+            post.copy(id = dataDb.firstOrNull()?.first()?.id ?: 1)
         }
         dao.insert(PostEntity.fromDto(newPost).copy(isSaved = false))
         try {
