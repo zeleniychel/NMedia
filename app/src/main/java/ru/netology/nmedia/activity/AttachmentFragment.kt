@@ -11,7 +11,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.databinding.FragmentAttachmentBinding
-import ru.netology.nmedia.dto.Converter
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.getParcelableCompat
 import ru.netology.nmedia.util.loadAttachment
@@ -53,14 +52,14 @@ class AttachmentFragment : Fragment() {
             findNavController().navigateUp()
             (activity as AppCompatActivity).supportActionBar?.show()
         }
-        viewModel.data.observe(viewLifecycleOwner) {
-            val post = it.posts.find { (id) -> id == postArg?.id } ?: return@observe
-            binding.likes.text = post.let { Converter.convertNumber(post.likes) }
-            binding.likes.isChecked = post.likedByMe
-            binding.likes.setOnClickListener {
-                viewModel.likeById(post)
-            }
-        }
+//        viewModel.data.observe(viewLifecycleOwner) {
+//            val post = it.posts.find { (id) -> id == postArg?.id } ?: return@observe
+//            binding.likes.text = post.let { Converter.convertNumber(post.likes) }
+//            binding.likes.isChecked = post.likedByMe
+//            binding.likes.setOnClickListener {
+//                viewModel.likeById(post)
+//            }
+//        }
         return binding.root
     }
 }

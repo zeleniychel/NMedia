@@ -4,9 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
@@ -18,7 +16,6 @@ import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Media
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.entity.PostEntity
-import ru.netology.nmedia.entity.toDto
 import ru.netology.nmedia.entity.toEntity
 import ru.netology.nmedia.error.ApiError
 import ru.netology.nmedia.error.NetworkError
@@ -41,7 +38,6 @@ class PostRepositoryImpl @Inject constructor(
         }
     ).flow
 
-    private val dataDb = dao.getAll().map(List<PostEntity>::toDto)
 
     override suspend fun getAll() {
         try {
@@ -76,13 +72,12 @@ class PostRepositoryImpl @Inject constructor(
     override fun getNewerCount(id: Long): Flow<Int> = flow {
         while (true) {
             delay(10_000L)
-            val response = apiService.getNewer(id)
+            val response = apiService.getNewerCount(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(body.toEntity(isHidden = true))
-            emit(dao.getIsHiddenCount())
+            emit(body)
         }
 
     }
@@ -134,19 +129,19 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun save(post: Post) {
-        val newPost = if (post.id == 0L) {
-            post.copy(id = dataDb.firstOrNull()?.first()?.id?.plus(1) ?: 1)
-        } else {
-            post.copy(id = dataDb.firstOrNull()?.first()?.id ?: 1)
-        }
-        dao.insert(PostEntity.fromDto(newPost).copy(isSaved = false))
+//        val newPost = if (post.id == 0L) {
+//            post.copy(id = data.firstOrNull()?.first()?.id?.plus(1) ?: 1)
+//        } else {
+//            post.copy(id = data.firstOrNull()?.first()?.id ?: 1)
+//        }
+//        dao.insert(PostEntity.fromDto(newPost).copy(isSaved = false))
         try {
             val response = apiService.save(post)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.removeById(post.id)
+//            dao.removeById(post.id)
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
@@ -156,12 +151,12 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveWithAttachment(post: Post, photoModel: PhotoModel) {
-        val newPost = if (post.id == 0L) {
-            post.copy(id = dataDb.firstOrNull()?.first()?.id?.plus(1) ?: 1)
-        } else {
-            post.copy(id = dataDb.firstOrNull()?.first()?.id ?: 1)
-        }
-        dao.insert(PostEntity.fromDto(newPost).copy(isSaved = false))
+//        val newPost = if (post.id == 0L) {
+//            post.copy(id = data.firstOrNull()?.first()?.id?.plus(1) ?: 1)
+//        } else {
+//            post.copy(id = data.firstOrNull()?.first()?.id ?: 1)
+//        }
+//        dao.insert(PostEntity.fromDto(newPost).copy(isSaved = false))
         try {
             val mediaResponse = saveMedia(photoModel.file!!)
             if (!mediaResponse.isSuccessful) {
@@ -184,7 +179,7 @@ class PostRepositoryImpl @Inject constructor(
                 throw ApiError(response.code(), response.message())
             }
             val body = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.removeById(post.id)
+//            dao.removeById(post.id)
             dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError

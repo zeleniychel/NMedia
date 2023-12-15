@@ -127,12 +127,12 @@ class FeedFragment : Fragment() {
             }
         }
 
-        viewModel.newerCount.observe(viewLifecycleOwner) {
-            if (it > 0) {
-                binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
-                binding.loadNewPosts.show()
-            }
-        }
+//        viewModel.newerCount.observe(viewLifecycleOwner) {
+//            if (it > 0) {
+//                binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
+//                binding.loadNewPosts.show()
+//            }
+//        }
 
 
         binding.loadNewPosts.setOnClickListener {
