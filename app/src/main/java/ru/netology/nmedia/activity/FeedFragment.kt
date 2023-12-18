@@ -54,11 +54,6 @@ class FeedFragment : Fragment() {
             }
         )
 
-        binding.swiperefresh.setOnRefreshListener {
-            viewModel.load()
-            binding.swiperefresh.isRefreshing = false
-        }
-
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
@@ -108,7 +103,7 @@ class FeedFragment : Fragment() {
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                    .setAction("Retry") { viewModel.load() }
+                    .setAction("Retry") { adapter.refresh() }
                     .show()
             }
         }
@@ -143,7 +138,6 @@ class FeedFragment : Fragment() {
 
         binding.swiperefresh.setOnRefreshListener {
             adapter.refresh()
-            viewModel.refreshPosts()
         }
 
         binding.fab.setOnClickListener {

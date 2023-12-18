@@ -73,11 +73,6 @@ class PostViewModel @Inject constructor(
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit> = _postCreated
 
-    init {
-        load()
-
-    }
-
     fun setPhoto(uri: Uri?, file: File?) {
         _photo.value = PhotoModel(uri, file)
     }
