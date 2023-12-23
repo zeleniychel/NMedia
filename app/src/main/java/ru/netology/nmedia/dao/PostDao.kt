@@ -49,5 +49,8 @@ interface PostDao {
     @Query("DELETE FROM PostEntity")
     suspend fun clear()
 
+    @Query("SELECT max(id) FROM PostEntity")
+    fun max(): Flow<Long?>
+
 
 }

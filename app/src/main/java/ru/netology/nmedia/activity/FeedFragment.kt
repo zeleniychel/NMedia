@@ -9,7 +9,10 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
@@ -24,6 +27,7 @@ import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import javax.inject.Inject
 
@@ -94,9 +98,15 @@ class FeedFragment : Fragment() {
             }
         })
 
-
-
         binding.list.adapter = adapter
+
+        val authViewModel by viewModels<AuthViewModel>()
+
+        lifecycleScope.launch {
+            authViewModel.data.collectLatest {
+                adapter.refresh()
+            }
+        }
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading
@@ -110,6 +120,7 @@ class FeedFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.data.collectLatest {
+                binding.list.smoothScrollToPosition(0)
                 adapter.submitData(it)
             }
         }
@@ -122,13 +133,16 @@ class FeedFragment : Fragment() {
             }
         }
 
-//        viewModel.newerCount.observe(viewLifecycleOwner) {
-//            if (it > 0) {
-//                binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
-//                binding.loadNewPosts.show()
-//            }
-//        }
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.newerCount.collect{
+                    if (it > 0) {
+                        binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
+                        binding.loadNewPosts.show()
+                    }
+                }
+            }
+        }
 
         binding.loadNewPosts.setOnClickListener {
             viewModel.changeIsHiddenFlag()
@@ -138,6 +152,7 @@ class FeedFragment : Fragment() {
 
         binding.swiperefresh.setOnRefreshListener {
             adapter.refresh()
+            binding.swiperefresh.isRefreshing = false
         }
 
         binding.fab.setOnClickListener {
