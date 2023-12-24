@@ -127,7 +127,7 @@ class FeedFragment : Fragment() {
 
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest {
-                it.refresh is LoadState.Loading
+                binding.swiperefresh.isRefreshing = it.refresh is LoadState.Loading
                         || it.append is LoadState.Loading
                         || it.prepend is LoadState.Loading
             }
@@ -145,6 +145,7 @@ class FeedFragment : Fragment() {
         }
 
         binding.loadNewPosts.setOnClickListener {
+            adapter.refresh()
             viewModel.changeIsHiddenFlag()
             binding.list.smoothScrollToPosition(0)
             binding.loadNewPosts.hide()
@@ -152,7 +153,6 @@ class FeedFragment : Fragment() {
 
         binding.swiperefresh.setOnRefreshListener {
             adapter.refresh()
-            binding.swiperefresh.isRefreshing = false
         }
 
         binding.fab.setOnClickListener {

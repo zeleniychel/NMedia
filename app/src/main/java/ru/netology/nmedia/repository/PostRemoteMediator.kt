@@ -55,6 +55,7 @@ class PostRemoteMediator(
                 response.code(),
                 response.message()
             )
+            if (body.isEmpty()) return MediatorResult.Success(endOfPaginationReached = true)
             appDb.withTransaction {
                 when (loadType) {
                     LoadType.REFRESH -> {
@@ -81,25 +82,26 @@ class PostRemoteMediator(
                         }
                     }
 
-                LoadType.PREPEND -> Unit
+                    LoadType.PREPEND -> Unit
 
-                LoadType.APPEND -> {
-                listOf(
-                    PostRemoteKeyEntity(
-                        PostRemoteKeyEntity.KeyType.BEFORE,
-                        body.first().id
-                    )
-                )
+                    LoadType.APPEND -> {
+                        postRemoteKeyDao.insert(
+                            listOf(
+                                PostRemoteKeyEntity(
+                                    type = PostRemoteKeyEntity.KeyType.BEFORE,
+                                    key = body.last().id
+                                )
+                            )
+                        )
+                    }
+                }
             }
-            }
+
+            postDao.insert(body.map(PostEntity::fromDto))
+            return MediatorResult.Success(body.isEmpty())
+
+        } catch (e: IOException) {
+            return MediatorResult.Error(e)
         }
-
-        postDao.insert(body.map(PostEntity::fromDto))
-        return MediatorResult.Success(body.isEmpty())
-
-    } catch (e: IOException)
-    {
-        return MediatorResult.Error(e)
     }
-}
 }
