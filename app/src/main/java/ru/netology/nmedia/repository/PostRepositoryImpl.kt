@@ -46,11 +46,15 @@ class PostRepositoryImpl @Inject constructor(
     private val postRemoteKeyDao: PostRemoteKeyDao,
     private val appDb: AppDb
 ) : PostRepository {
+
+    @Inject
+    lateinit var  mediator: PostRemoteMediator
+
     @OptIn(ExperimentalPagingApi::class)
     override val data = Pager(
         config = PagingConfig(pageSize = 10, enablePlaceholders = false),
         pagingSourceFactory = { dao.getPagingSource() },
-        remoteMediator = PostRemoteMediator(apiService, dao, postRemoteKeyDao, appDb)
+        remoteMediator = mediator
     ).flow
         .map {
             it.map(PostEntity::toDto)

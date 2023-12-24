@@ -14,9 +14,12 @@ import ru.netology.nmedia.entity.PostEntity
 import ru.netology.nmedia.entity.PostRemoteKeyEntity
 import ru.netology.nmedia.error.ApiError
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 @OptIn(ExperimentalPagingApi::class)
-class PostRemoteMediator(
+class PostRemoteMediator @Inject constructor(
     private val apiService: PostsApiService,
     private val postDao: PostDao,
     private val postRemoteKeyDao: PostRemoteKeyDao,
@@ -95,9 +98,8 @@ class PostRemoteMediator(
                         )
                     }
                 }
+                postDao.insert(body.map(PostEntity::fromDto))
             }
-
-            postDao.insert(body.map(PostEntity::fromDto))
             return MediatorResult.Success(body.isEmpty())
 
         } catch (e: IOException) {
