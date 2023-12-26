@@ -66,7 +66,7 @@ class AdViewHolder(
     private val binding: CardAdBinding
 ): RecyclerView.ViewHolder(binding.root) {
     fun bind(ad: Ad){
-        binding.image.load("http://10.0.2.2:9999/media/${ad.image}")
+        binding.image.loadAttachment("http://10.0.2.2:9999/media/${ad.image}")
     }
 }
 
