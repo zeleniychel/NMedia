@@ -21,8 +21,6 @@ import retrofit2.Response
 import ru.netology.nmedia.api.PostsApiService
 import ru.netology.nmedia.auth.AuthState
 import ru.netology.nmedia.dao.PostDao
-import ru.netology.nmedia.dao.PostRemoteKeyDao
-import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Attachment
 import ru.netology.nmedia.dto.AttachmentType
 import ru.netology.nmedia.dto.Media
@@ -43,14 +41,15 @@ import javax.inject.Singleton
 class PostRepositoryImpl @Inject constructor(
     private val dao: PostDao,
     private val apiService: PostsApiService,
-    private val postRemoteKeyDao: PostRemoteKeyDao,
-    private val appDb: AppDb
+    mediator: PostRemoteMediator
 ) : PostRepository {
+
+
     @OptIn(ExperimentalPagingApi::class)
     override val data = Pager(
         config = PagingConfig(pageSize = 10, enablePlaceholders = false),
         pagingSourceFactory = { dao.getPagingSource() },
-        remoteMediator = PostRemoteMediator(apiService, dao, postRemoteKeyDao, appDb)
+        remoteMediator = mediator
     ).flow
         .map {
             it.map(PostEntity::toDto)

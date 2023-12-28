@@ -28,7 +28,7 @@ interface PostsApiService {
     @GET("posts/{id}/newer")
     suspend fun getNewer(@Path("id") id: Long): Response<List<Post>>
 
-    @GET("posts/{id}/newer")
+    @GET("posts/{id}/newer-count")
     suspend fun getNewerCount(@Path("id") id: Long): Response<NewerCount>
 
     @GET("posts/{id}/before")
