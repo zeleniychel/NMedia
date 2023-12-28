@@ -10,6 +10,7 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import ru.netology.nmedia.dto.FeedItem
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModelState
 import ru.netology.nmedia.model.PhotoModel
@@ -34,7 +35,7 @@ class PostViewModel @Inject constructor(
     private val repository: PostRepository,
 ) : ViewModel() {
 
-    val data: Flow<PagingData<Post>> = repository
+    val data: Flow<PagingData<FeedItem>> = repository
         .data
         .cachedIn(viewModelScope)
 
