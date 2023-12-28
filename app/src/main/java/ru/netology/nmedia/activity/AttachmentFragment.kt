@@ -52,6 +52,7 @@ class AttachmentFragment : Fragment() {
         }
 
 
+
         binding.likes.text = postArg?.let { Converter.convertNumber(it.likes) }
         binding.likes.isChecked = postArg?.likedByMe?:false
 
