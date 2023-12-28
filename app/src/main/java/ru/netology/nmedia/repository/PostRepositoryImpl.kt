@@ -49,8 +49,6 @@ class PostRepositoryImpl @Inject constructor(
     mediator: PostRemoteMediator
 ) : PostRepository {
 
-    @Inject
-    lateinit var  mediator: PostRemoteMediator
 
     @OptIn(ExperimentalPagingApi::class)
     override val data: Flow<PagingData<FeedItem>> = Pager(
