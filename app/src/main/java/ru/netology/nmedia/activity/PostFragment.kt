@@ -77,9 +77,11 @@ class PostFragment : Fragment() {
         })
 
         holder.bind(postArg ?: Post())
-        viewModel.data.observe(viewLifecycleOwner) {
-            holder.bind(it.posts.find { (id) -> id == postArg?.id } ?: Post())
-        }
+
+//        lifecycleScope.launch {
+//            viewModel.data.collectLatest {
+//            holder.bind(it.posts.find { (id) -> id == postArg?.id } ?: Post())
+//        }
 
         return binding.root
     }

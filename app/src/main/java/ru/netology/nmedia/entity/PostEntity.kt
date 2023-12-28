@@ -19,10 +19,22 @@ data class PostEntity(
     val likes: Int = 0,
     @Embedded
     val attachment: Attachment? = null,
+    val ownedByMe:Boolean = false,
     val isSaved: Boolean = true,
     val isHidden: Boolean = false
 ) {
-    fun toDto() = Post(id, authorId, author, authorAvatar, content, published, likedByMe, likes, attachment)
+    fun toDto() = Post(
+        id = id,
+        authorId = authorId,
+        author = author,
+        authorAvatar = authorAvatar,
+        content = content,
+        published = published,
+        likedByMe = likedByMe,
+        likes = likes,
+        attachment = attachment,
+        ownedByMe = ownedByMe
+    )
 
     companion object {
         fun fromDto(dto: Post, isSaved: Boolean = true, isHidden: Boolean = false) =
@@ -36,6 +48,7 @@ data class PostEntity(
                 dto.likedByMe,
                 dto.likes,
                 dto.attachment,
+                dto.ownedByMe,
                 isSaved = isSaved,
                 isHidden = isHidden
             )

@@ -9,9 +9,16 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import ru.netology.nmedia.R
 import ru.netology.nmedia.activity.EditorFragment.Companion.content
 import ru.netology.nmedia.activity.EditorFragment.Companion.url
@@ -20,6 +27,7 @@ import ru.netology.nmedia.adapter.PostsAdapter
 import ru.netology.nmedia.auth.AppAuth
 import ru.netology.nmedia.databinding.FragmentFeedBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.viewmodel.AuthViewModel
 import ru.netology.nmedia.viewmodel.PostViewModel
 import javax.inject.Inject
 
@@ -49,10 +57,6 @@ class FeedFragment : Fragment() {
                 }
             }
         )
-        binding.swiperefresh.setOnRefreshListener {
-            viewModel.load()
-            binding.swiperefresh.isRefreshing = false
-        }
 
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
@@ -84,7 +88,6 @@ class FeedFragment : Fragment() {
                 } else {
                     viewModel.likeById(post)
                 }
-
             }
 
             override fun onRemove(post: Post) {
@@ -95,50 +98,50 @@ class FeedFragment : Fragment() {
             }
         })
 
-
-
         binding.list.adapter = adapter
+
+        val authViewModel by viewModels<AuthViewModel>()
+
+        lifecycleScope.launch {
+            authViewModel.data.collectLatest {
+                adapter.refresh()
+            }
+        }
 
         viewModel.dataState.observe(viewLifecycleOwner) { state ->
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                    .setAction("Retry") { viewModel.load() }
+                    .setAction("Retry") { adapter.refresh() }
                     .show()
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            val newPost = state.posts.size > adapter.currentList.size && adapter.itemCount > 0
-            adapter.submitList(state.posts) {
-                if (newPost) {
-                    binding.list.smoothScrollToPosition(0)
+        lifecycleScope.launch {
+            viewModel.data.collectLatest {
+                binding.list.smoothScrollToPosition(0)
+                adapter.submitData(it)
+            }
+        }
+
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest {
+                it.refresh is LoadState.Loading
+                        || it.append is LoadState.Loading
+                        || it.prepend is LoadState.Loading
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.newerCount.collect{
+                    if (it > 0) {
+                        binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
+                        binding.loadNewPosts.show()
+                    }
                 }
             }
-            binding.emptyText.isVisible = state.empty
-        }
-
-        viewModel.newerCount.observe(viewLifecycleOwner) {
-            if (it > 0) {
-                binding.loadNewPosts.text = resources.getString(R.string.load_new_posts, it)
-                binding.loadNewPosts.show()
-
-            }
-
-        }
-
-        binding.swiperefresh.setOnRefreshListener {
-            viewModel.refreshPosts()
-        }
-
-        binding.fab.setOnClickListener {
-            if (appAuth.authStateFlow.value.id == 0L) {
-                LoginDialog().show(childFragmentManager, "")
-            } else {
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-            }
-
         }
 
         binding.loadNewPosts.setOnClickListener {
@@ -147,6 +150,18 @@ class FeedFragment : Fragment() {
             binding.loadNewPosts.hide()
         }
 
+        binding.swiperefresh.setOnRefreshListener {
+            adapter.refresh()
+            binding.swiperefresh.isRefreshing = false
+        }
+
+        binding.fab.setOnClickListener {
+            if (appAuth.authStateFlow.value.id == 0L) {
+                LoginDialog().show(childFragmentManager, "")
+            } else {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            }
+        }
         return binding.root
     }
 }

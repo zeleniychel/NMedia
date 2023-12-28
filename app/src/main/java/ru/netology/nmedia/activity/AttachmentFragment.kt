@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.netology.nmedia.databinding.FragmentAttachmentBinding
@@ -15,11 +14,9 @@ import ru.netology.nmedia.dto.Converter
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.util.getParcelableCompat
 import ru.netology.nmedia.util.loadAttachment
-import ru.netology.nmedia.viewmodel.PostViewModel
 
 @AndroidEntryPoint
 class AttachmentFragment : Fragment() {
-    private val viewModel: PostViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,14 +51,12 @@ class AttachmentFragment : Fragment() {
             (activity as AppCompatActivity).supportActionBar?.show()
         }
 
-        viewModel.data.observe(viewLifecycleOwner) {
-            val post = it.posts.find { (id) -> id == postArg?.id } ?: return@observe
-            binding.likes.text = post.let { Converter.convertNumber(post.likes) }
-            binding.likes.isChecked = post.likedByMe
-            binding.likes.setOnClickListener {
-                viewModel.likeById(post)
-            }
-        }
+
+
+        binding.likes.text = postArg?.let { Converter.convertNumber(it.likes) }
+        binding.likes.isChecked = postArg?.likedByMe?:false
+
+
         return binding.root
     }
 }
